@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/chart" },
+    { "path": "./packages/line-chart" },
+    { "path": "./packages/3d-pie-chart" }
+  ]
+}

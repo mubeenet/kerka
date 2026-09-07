@@ -1,0 +1,28 @@
+{
+  "name": "@graph-web-component/3d-pie-chart",
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": [
+    "./dist/register.js"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./register": "./dist/register.js",
+    "./register.global.js": "./dist/register.global.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@graph-web-component/chart": "workspace:*"
+  },
+  "peerDependencies": {
+    "chart.js": "^4.5.1"
+  },
+  "devDependencies": {
+    "chart.js": "^4.5.1"
+  }
+}

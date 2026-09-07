@@ -1,0 +1,8 @@
+{
+  "name": "@graph-web-component/example-basic",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@graph-web-component/3d-pie-chart": "workspace:*"
+  }
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>3D pie chart Web Component</title>
+    <style>
+      body {
+        background: #f8fafc;
+        font-family: system-ui, sans-serif;
+        margin: 2rem;
+      }
+
+      graph-3d-pie-chart {
+        background: #ffffff;
+        block-size: min(486px, calc(100vh - 4rem));
+        inline-size: min(532px, 100%);
+      }
+    </style>
+  </head>
+  <body>
+    <graph-3d-pie-chart
+      aria-label="Distribution by category"
+      depth="46"
+      hover-offset="96"
+      offset="96"
+      rotation="60"
+      side-shade="0.28"
+      vertical-scale="0.68"
+      reversed
+    >
+      <graph-pie-slice label="Blue" value="458" color="#3366cc"></graph-pie-slice>
+      <graph-pie-slice label="Red" value="83" color="#dc3912"></graph-pie-slice>
+    </graph-3d-pie-chart>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <script src="/register.global.js"></script>
+  </body>
+</html>

@@ -1,0 +1,174 @@
+// @vitest-environment happy-dom
+
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const instances: MockChart[] = [];
+
+class MockChart {
+  static register = vi.fn();
+  data: Record<string, any>;
+  options: Record<string, any>;
+  readonly destroy = vi.fn();
+  readonly update = vi.fn();
+
+  constructor(_canvas: HTMLCanvasElement, configuration: Record<string, any>) {
+    this.data = configuration.data;
+    this.options = configuration.options;
+    instances.push(this);
+  }
+}
+
+class MockArcElement {
+  static defaults = {};
+  static defaultRoutes = {};
+  static descriptors = {};
+}
+
+class MockDoughnutController {
+  static defaults = {};
+  update(): void {}
+}
+
+vi.mock('chart.js', () => ({
+  ArcElement: MockArcElement,
+  Chart: MockChart,
+  DoughnutController: MockDoughnutController,
+  Legend: { id: 'legend' },
+  Tooltip: { id: 'tooltip' },
+}));
+
+const { defineThreeDPieChart, GraphThreeDPieChartElement } = await import('./index.js');
+defineThreeDPieChart('test-3d-pie-chart');
+
+describe('GraphThreeDPieChartElement', () => {
+  beforeEach(() => {
+    document.body.replaceChildren();
+    instances.length = 0;
+  });
+
+  it('maps component data and options into a Chart.js configuration', () => {
+    const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
+    element.innerHTML = `
+      <graph-pie-slice label="Blue" value="2" color="#3366cc"></graph-pie-slice>
+      <graph-pie-slice label="Red" value="1" color="#dc3912"></graph-pie-slice>
+    `;
+    element.setAttribute('depth', '24');
+    element.setAttribute('offset', '6');
+    element.setAttribute('reversed', '');
+    element.setAttribute('vertical-scale', '0.6');
+    document.body.append(element);
+
+    expect(instances[0]?.data).toMatchObject({
+      labels: ['Blue', 'Red'],
+      datasets: [{
+        data: [2, 1],
+        backgroundColor: ['#3366cc', '#dc3912'],
+        depth: 24,
+        hoverBackgroundColor: ['#3366cc', '#dc3912'],
+        hoverBorderWidth: 0,
+        offset: 6,
+        verticalScale: 0.6,
+      }],
+    });
+    expect(instances[0]?.options.reversed).toBe(true);
+    expect(instances[0]?.options.plugins.threeDPieLabels).toBe(false);
+    expect(instances[0]?.options.plugins.tooltip.enabled).toBe(false);
+  });
+
+  it('updates the existing chart and supports numeric attributes', async () => {
+    const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
+    document.body.append(element);
+    element.insertAdjacentHTML(
+      'beforeend',
+      '<graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>',
+    );
+    element.setAttribute('depth', '40');
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(instances).toHaveLength(1);
+    expect(instances[0]?.data.datasets[0].depth).toBe(40);
+    expect(instances[0]?.update).toHaveBeenCalledOnce();
+  });
+
+  it('emits typed slice details for hover and click callbacks', () => {
+    const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
+    element.innerHTML = `
+      <graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>
+      <graph-pie-slice label="B" value="3" color="#ffffff"></graph-pie-slice>
+    `;
+    document.body.append(element);
+    const clicked = vi.fn();
+    const hovered = vi.fn();
+    element.addEventListener('three-d-pie-click', clicked);
+    element.addEventListener('three-d-pie-hover', hovered);
+
+    instances[0]?.options.onClick({}, [{ datasetIndex: 0, index: 1 }]);
+    instances[0]?.options.onHover({}, []);
+
+    expect(clicked.mock.calls[0]?.[0].detail).toEqual({
+      label: 'B', value: 3, color: '#ffffff', index: 1, percentage: 75,
+    });
+    expect(hovered.mock.calls[0]?.[0].detail).toBeNull();
+  });
+
+  it('generates accessible percentages and rejects invalid attributes', () => {
+    const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
+    element.setAttribute('aria-label', 'Market share');
+    element.innerHTML =
+      '<graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>';
+    document.body.append(element);
+    expect(element.shadowRoot?.textContent).toContain('Market share. A: 1, 100.0%');
+    expect(() => {
+      element.setAttribute('vertical-scale', '2');
+    }).toThrow(RangeError);
+  });
+
+  it('updates data when a slice attribute changes', async () => {
+    const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
+    element.innerHTML =
+      '<graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>';
+    document.body.append(element);
+    element.querySelector('graph-pie-slice')?.setAttribute('value', '4');
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(instances[0]?.data.datasets[0].data).toEqual([4]);
+    expect(instances[0]?.update).toHaveBeenCalledOnce();
+  });
+
+  it('toggles percentage labels with the show-percentage attribute', async () => {
+    const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
+    element.setAttribute('show-percentage', '');
+    element.innerHTML =
+      '<graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>';
+    document.body.append(element);
+
+    expect(instances[0]?.options.plugins.threeDPieLabels).toEqual({
+      color: '#ffffff',
+      font: '16px sans-serif',
+    });
+
+    element.removeAttribute('show-percentage');
+    await Promise.resolve();
+
+    expect(instances[0]?.options.plugins.threeDPieLabels).toBe(false);
+    expect(instances[0]?.update).toHaveBeenCalledOnce();
+  });
+
+  it('toggles hover tooltips with the show-tooltip attribute', async () => {
+    const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
+    element.setAttribute('show-tooltip', '');
+    element.innerHTML =
+      '<graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>';
+    document.body.append(element);
+
+    expect(instances[0]?.options.plugins.tooltip.enabled).toBe(true);
+
+    element.removeAttribute('show-tooltip');
+    await Promise.resolve();
+
+    expect(instances[0]?.options.plugins.tooltip.enabled).toBe(false);
+    expect(instances[0]?.update).toHaveBeenCalledOnce();
+  });
+});

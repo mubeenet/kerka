@@ -1,0 +1,22 @@
+{
+  "name": "@graph-web-component/line-chart",
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": [
+    "./dist/register.js"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./register": "./dist/register.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@graph-web-component/chart": "workspace:*",
+    "chart.js": "^4.5.1"
+  }
+}

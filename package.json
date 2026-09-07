@@ -1,0 +1,18 @@
+{
+  "name": "graph-web-component-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b && vite build --config packages/3d-pie-chart/vite.config.ts",
+    "clean": "tsc -b --clean",
+    "example": "pnpm build && vite examples/basic",
+    "test": "vitest run --configLoader runner --no-cache",
+    "typecheck": "tsc -p tsconfig.check.json --pretty false"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.11.15",
+    "typescript": "^5.9.2",
+    "vite": "^8.1.5",
+    "vitest": "^4.1.11"
+  }
+}
