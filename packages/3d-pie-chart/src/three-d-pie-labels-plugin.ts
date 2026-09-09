@@ -10,6 +10,7 @@ export const threeDPieLabelsPlugin: Plugin<'threeDPie'> = {
     font: '16px sans-serif',
   },
   afterDatasetsDraw(chart, _arguments, options) {
+    if (chart.config.type !== 'threeDPie') return;
     drawPercentageLabels(chart, options);
   },
 };

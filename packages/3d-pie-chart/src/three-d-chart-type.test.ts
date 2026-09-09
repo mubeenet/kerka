@@ -2,6 +2,7 @@ import { Chart } from 'chart.js';
 import { describe, expect, it, vi } from 'vitest';
 import { registerThreeDPieChartComponents } from './chart-js-registration.js';
 import { ThreeDArcElement } from './three-d-arc-element.js';
+import { threeDPieLabelsPlugin } from './three-d-pie-labels-plugin.js';
 import {
   resolveReversedAngles,
   ThreeDPieController,
@@ -128,6 +129,7 @@ describe('ThreeDPieController', () => {
     registerThreeDPieChartComponents();
     expect(Chart.registry.getController('threeDPie')).toBe(ThreeDPieController);
     expect(Chart.registry.getElement('threeDArc')).toBe(ThreeDArcElement);
+    expect(() => Chart.registry.getPlugin(threeDPieLabelsPlugin.id)).toThrow();
   });
 
   it('layers front arcs over cross-sections over newly exposed back sides', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { drawPercentageLabels } from './three-d-pie-labels-plugin.js';
+import { drawPercentageLabels, threeDPieLabelsPlugin } from './three-d-pie-labels-plugin.js';
 
 describe('3D pie percentage labels', () => {
   it('draws percentages at the projected arc centers', () => {
@@ -46,6 +46,24 @@ describe('3D pie percentage labels', () => {
         data: [{ hidden: false, getCenterPoint: () => ({ x: 0, y: 0 }) }],
       }),
     } as never, {});
+    expect(context.fillText).not.toHaveBeenCalled();
+  });
+
+  it('does not run when accidentally registered against a non-3D-pie chart', () => {
+    const context = {
+      fillText: vi.fn(),
+      restore: vi.fn(),
+      save: vi.fn(),
+    } as unknown as CanvasRenderingContext2D;
+    threeDPieLabelsPlugin.afterDatasetsDraw?.({
+      config: { type: 'line' },
+      ctx: context,
+      data: { datasets: [{ data: [1] }] },
+      getDatasetMeta: () => ({
+        data: [{ hidden: false, getCenterPoint: () => ({ x: 0, y: 0 }) }],
+      }),
+    } as never, {} as never, {});
+
     expect(context.fillText).not.toHaveBeenCalled();
   });
 });

@@ -6,12 +6,14 @@ const instances: MockChart[] = [];
 
 class MockChart {
   static register = vi.fn();
+  readonly configuration: Record<string, any>;
   data: Record<string, any>;
   options: Record<string, any>;
   readonly destroy = vi.fn();
   readonly update = vi.fn();
 
   constructor(_canvas: HTMLCanvasElement, configuration: Record<string, any>) {
+    this.configuration = configuration;
     this.data = configuration.data;
     this.options = configuration.options;
     instances.push(this);
@@ -71,6 +73,11 @@ describe('GraphThreeDPieChartElement', () => {
       }],
     });
     expect(instances[0]?.options.reversed).toBe(true);
+    expect(instances[0]?.configuration.plugins).toEqual([
+      expect.objectContaining({ id: 'tooltip' }),
+      expect.objectContaining({ id: 'legend' }),
+      expect.objectContaining({ id: 'threeDPieLabels' }),
+    ]);
     expect(instances[0]?.options.plugins.threeDPieLabels).toBe(false);
     expect(instances[0]?.options.plugins.tooltip.enabled).toBe(false);
   });

@@ -6,12 +6,14 @@ const instances: MockChart[] = [];
 const register = vi.fn();
 
 class MockChart {
+  readonly configuration: Record<string, any>;
   readonly destroy = vi.fn();
   readonly update = vi.fn();
   data: Record<string, any>;
   options: Record<string, any>;
 
   constructor(_canvas: HTMLCanvasElement, configuration: Record<string, any>) {
+    this.configuration = configuration;
     this.data = configuration.data;
     this.options = configuration.options;
     instances.push(this);
@@ -57,6 +59,10 @@ describe('GraphLineChartElement on Chart.js', () => {
       parsing: false,
       borderColor: '#2563eb',
     });
+    expect(instances[0]?.configuration.plugins).toEqual([
+      expect.objectContaining({ id: 'tooltip' }),
+      expect.objectContaining({ id: 'legend' }),
+    ]);
   });
 
   it('updates data and presentation without recreating the chart', async () => {

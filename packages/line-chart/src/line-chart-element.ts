@@ -1,5 +1,5 @@
 import { ChartJsChartElement } from '@graph-web-component/chart';
-import type { Chart, ChartConfiguration } from 'chart.js';
+import { Legend, Tooltip, type Chart, type ChartConfiguration } from 'chart.js';
 import type { LineChartStyle, LineDatum } from './types.js';
 
 const DEFAULT_STYLE: LineChartStyle = {
@@ -60,6 +60,7 @@ export class GraphLineChartElement extends ChartJsChartElement<'line'> {
           pointRadius: style.pointRadius,
         }],
       },
+      plugins: [Tooltip, Legend],
       options: {
         maintainAspectRatio: false,
         normalized: true,

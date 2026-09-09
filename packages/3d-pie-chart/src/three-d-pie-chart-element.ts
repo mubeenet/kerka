@@ -1,6 +1,13 @@
 import { ChartJsChartElement } from '@graph-web-component/chart';
-import type { ActiveElement, Chart, ChartConfiguration } from 'chart.js';
+import {
+  Legend,
+  Tooltip,
+  type ActiveElement,
+  type Chart,
+  type ChartConfiguration,
+} from 'chart.js';
 import { calculatePercentages, validateThreeDPieData } from './geometry.js';
+import { threeDPieLabelsPlugin } from './three-d-pie-labels-plugin.js';
 import type {
   ThreeDPieDatum,
   ThreeDPieOptions,
@@ -71,6 +78,7 @@ export class GraphThreeDPieChartElement extends ChartJsChartElement<'threeDPie'>
           verticalScale: options.verticalScale,
         }],
       },
+      plugins: [Tooltip, Legend, threeDPieLabelsPlugin],
       options: {
         animation: {
           animateRotate: true,
