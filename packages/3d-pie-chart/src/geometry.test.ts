@@ -6,6 +6,7 @@ import {
   calculatePercentages,
   frontFacingSegments,
   isFrontFacingAngle,
+  isFullCircle,
   normalizeAngle,
   pointInProjectedArc,
   projectPoint,
@@ -52,6 +53,22 @@ describe('3D pie geometry contracts', () => {
       innerRadius: 0,
       outerRadius: 60,
     });
+  });
+
+  it('does not introduce an angular gap in a full-circle arc', () => {
+    const geometry = calculateOffsetArcGeometry(
+      -Math.PI / 2,
+      Math.PI * 1.5,
+      Math.PI * 2,
+      0,
+      50,
+      18,
+      4,
+    );
+
+    expect(isFullCircle(Math.PI * 2)).toBe(true);
+    expect(geometry.startAngle).toBe(-Math.PI / 2);
+    expect(geometry.endAngle).toBe(Math.PI * 1.5);
   });
 
   it('hit-tests against the projected ellipse and slice angles', () => {

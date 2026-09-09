@@ -105,6 +105,18 @@ describe('ThreeDArcElement', () => {
     expect(context.moveTo).toHaveBeenCalledTimes(2);
   });
 
+  it('does not draw radial cut faces for a full-circle slice', () => {
+    const arc = createArc();
+    arc.endAngle = Math.PI * 2;
+    arc.circumference = Math.PI * 2;
+    const context = createContext();
+
+    arc.drawRadialSides(context);
+
+    expect(context.moveTo).not.toHaveBeenCalled();
+    expect(context.fill).not.toHaveBeenCalled();
+  });
+
   it('calculates depth independently for each radial boundary', () => {
     const arc = createArc();
     arc.startAngle = -Math.PI / 2;

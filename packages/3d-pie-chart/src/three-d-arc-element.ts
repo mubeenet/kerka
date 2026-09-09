@@ -3,6 +3,7 @@ import {
   backFacingSegments,
   calculateOffsetArcGeometry,
   frontFacingSegments,
+  isFullCircle,
   pointInProjectedArc,
   projectPoint,
   shadeHexColor,
@@ -142,6 +143,7 @@ export class ThreeDArcElement extends ArcElement {
   drawRadialSide(ctx: CanvasRenderingContext2D, side: RadialSide): void {
     if (
       this.circumference <= 0 ||
+      isFullCircle(this.circumference) ||
       this.outerRadius <= 0 ||
       this.depth <= 0
     ) {

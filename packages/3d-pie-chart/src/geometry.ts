@@ -1,6 +1,7 @@
 import type { ThreeDPieDatum, ThreeDPieGeometry } from './types.js';
 
 const TAU = Math.PI * 2;
+const FULL_CIRCLE_EPSILON = 1e-6;
 
 export interface AngleSegment {
   readonly startAngle: number;
@@ -10,6 +11,10 @@ export interface AngleSegment {
 export interface OffsetArcGeometry extends AngleSegment {
   readonly innerRadius: number;
   readonly outerRadius: number;
+}
+
+export function isFullCircle(circumference: number): boolean {
+  return Math.abs(circumference) >= TAU - FULL_CIRCLE_EPSILON;
 }
 
 export function calculateOffsetArcGeometry(
@@ -35,8 +40,9 @@ export function calculateOffsetArcGeometry(
     ? innerRadius + spacingRadius + radiusOffset + pixelMargin
     : 0;
   const sweep = endAngle - startAngle;
+  const fullCircle = isFullCircle(circumference);
   let spacingOffset = 0;
-  if (spacingRadius && displayedOuterRadius > 0) {
+  if (!fullCircle && spacingRadius && displayedOuterRadius > 0) {
     const unspacedInnerRadius = innerRadius > 0 ? innerRadius - spacingRadius : 0;
     const unspacedOuterRadius = displayedOuterRadius - spacingRadius;
     const averageRadius = (unspacedInnerRadius + unspacedOuterRadius) / 2;
@@ -45,7 +51,7 @@ export function calculateOffsetArcGeometry(
       : sweep;
     spacingOffset = (sweep - adjustedSweep) / 2;
   }
-  const adjustedSweep = displayedOuterRadius > 0
+  const adjustedSweep = !fullCircle && displayedOuterRadius > 0
     ? Math.max(0.001, sweep * displayedOuterRadius - radiusOffset / Math.PI)
       / displayedOuterRadius
     : sweep;
