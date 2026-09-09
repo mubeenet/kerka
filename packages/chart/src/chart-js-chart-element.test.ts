@@ -3,10 +3,23 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const chartInstances: MockChart[] = [];
+const resizeObserverInstances: MockResizeObserver[] = [];
+
+class MockResizeObserver {
+  readonly disconnect = vi.fn();
+  readonly observe = vi.fn();
+
+  constructor(readonly callback: ResizeObserverCallback) {
+    resizeObserverInstances.push(this);
+  }
+}
+
+vi.stubGlobal('ResizeObserver', MockResizeObserver);
 
 class MockChart {
   readonly config: unknown;
   readonly destroy = vi.fn();
+  readonly resize = vi.fn();
   readonly update = vi.fn();
 
   constructor(_canvas: HTMLCanvasElement, config: unknown) {
@@ -50,6 +63,7 @@ describe('ChartJsChartElement', () => {
   beforeEach(() => {
     document.body.replaceChildren();
     chartInstances.length = 0;
+    resizeObserverInstances.length = 0;
   });
 
   it('creates one Chart.js instance when connected', () => {
@@ -90,15 +104,29 @@ describe('ChartJsChartElement', () => {
       .toContain('min-inline-size: 0');
   });
 
+  it('resizes the chart when the host layout changes', () => {
+    const element = document.createElement('test-chart-js-element');
+    document.body.append(element);
+
+    const observer = resizeObserverInstances[0];
+    expect(observer?.observe).toHaveBeenCalledWith(element);
+
+    observer?.callback([], observer as unknown as ResizeObserver);
+
+    expect(chartInstances[0]?.resize).toHaveBeenCalledOnce();
+  });
+
   it('destroys on disconnect and creates a fresh instance on reconnect', () => {
     const element = document.createElement('test-chart-js-element');
     document.body.append(element);
     const first = chartInstances[0];
 
     element.remove();
+    expect(resizeObserverInstances[0]?.disconnect).toHaveBeenCalledOnce();
     expect(first?.destroy).toHaveBeenCalledOnce();
 
     document.body.append(element);
     expect(chartInstances).toHaveLength(2);
+    expect(resizeObserverInstances[0]?.observe).toHaveBeenCalledTimes(2);
   });
 });
