@@ -210,14 +210,14 @@ export class GraphThreeDPieChartElement extends ChartJsChartElement<'threeDPie'>
 
   #refreshData(requestUpdate = true): void {
     const data = [...this.children]
-      .filter((child): child is HTMLElement => child.localName === 'graph-pie-slice')
+      .filter((child): child is HTMLElement => child.localName === 'kerka-pie-slice')
       .map((slice) => {
         const label = slice.getAttribute('label');
         const value = slice.getAttribute('value');
         const color = slice.getAttribute('color');
         if (label === null || value === null || color === null) {
           throw new TypeError(
-            '<graph-pie-slice> requires label, value, and color attributes.',
+            '<kerka-pie-slice> requires label, value, and color attributes.',
           );
         }
         return { label, value: Number(value), color };
@@ -247,6 +247,6 @@ export class GraphThreeDPieChartElement extends ChartJsChartElement<'threeDPie'>
 
 declare global {
   interface HTMLElementTagNameMap {
-    'graph-3d-pie-chart': GraphThreeDPieChartElement;
+    'kerka-3d-pie-chart': GraphThreeDPieChartElement;
   }
 }

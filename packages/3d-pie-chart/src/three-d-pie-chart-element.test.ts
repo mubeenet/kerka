@@ -49,8 +49,8 @@ describe('GraphThreeDPieChartElement', () => {
   it('maps component data and options into a Chart.js configuration', () => {
     const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
     element.innerHTML = `
-      <graph-pie-slice label="Blue" value="2" color="#3366cc"></graph-pie-slice>
-      <graph-pie-slice label="Red" value="1" color="#dc3912"></graph-pie-slice>
+      <kerka-pie-slice label="Blue" value="2" color="#3366cc"></kerka-pie-slice>
+      <kerka-pie-slice label="Red" value="1" color="#dc3912"></kerka-pie-slice>
     `;
     element.setAttribute('depth', '24');
     element.setAttribute('offset', '6');
@@ -80,7 +80,7 @@ describe('GraphThreeDPieChartElement', () => {
     document.body.append(element);
     element.insertAdjacentHTML(
       'beforeend',
-      '<graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>',
+      '<kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>',
     );
     element.setAttribute('depth', '40');
     await Promise.resolve();
@@ -94,8 +94,8 @@ describe('GraphThreeDPieChartElement', () => {
   it('emits typed slice details for hover and click callbacks', () => {
     const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
     element.innerHTML = `
-      <graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>
-      <graph-pie-slice label="B" value="3" color="#ffffff"></graph-pie-slice>
+      <kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>
+      <kerka-pie-slice label="B" value="3" color="#ffffff"></kerka-pie-slice>
     `;
     document.body.append(element);
     const clicked = vi.fn();
@@ -116,7 +116,7 @@ describe('GraphThreeDPieChartElement', () => {
     const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
     element.setAttribute('aria-label', 'Market share');
     element.innerHTML =
-      '<graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>';
+      '<kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>';
     document.body.append(element);
     expect(element.shadowRoot?.textContent).toContain('Market share. A: 1, 100.0%');
     expect(() => {
@@ -127,9 +127,9 @@ describe('GraphThreeDPieChartElement', () => {
   it('updates data when a slice attribute changes', async () => {
     const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
     element.innerHTML =
-      '<graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>';
+      '<kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>';
     document.body.append(element);
-    element.querySelector('graph-pie-slice')?.setAttribute('value', '4');
+    element.querySelector('kerka-pie-slice')?.setAttribute('value', '4');
     await Promise.resolve();
     await Promise.resolve();
 
@@ -141,7 +141,7 @@ describe('GraphThreeDPieChartElement', () => {
     const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
     element.setAttribute('show-percentage', '');
     element.innerHTML =
-      '<graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>';
+      '<kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>';
     document.body.append(element);
 
     expect(instances[0]?.options.plugins.threeDPieLabels).toEqual({
@@ -160,7 +160,7 @@ describe('GraphThreeDPieChartElement', () => {
     const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
     element.setAttribute('show-tooltip', '');
     element.innerHTML =
-      '<graph-pie-slice label="A" value="1" color="#000000"></graph-pie-slice>';
+      '<kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>';
     document.body.append(element);
 
     expect(instances[0]?.options.plugins.tooltip.enabled).toBe(true);

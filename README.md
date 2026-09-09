@@ -1,4 +1,4 @@
-# Graph Web Component
+# Kerka
 
 Web Components backed by Chart.js, organized as independently importable
 packages. The first target is an interactive 3D pie chart matching the reference
@@ -15,7 +15,7 @@ drawing-only plugin. Its elliptical projection changes both rendering and hit
 testing, so it needs a custom controller and element:
 
 ```text
-<graph-3d-pie-chart>
+<kerka-3d-pie-chart>
           │
           ▼
 @graph-web-component/chart
@@ -79,10 +79,10 @@ Do not use `async`, because it does not preserve execution order.
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@graph-web-component/3d-pie-chart@0.1.0/dist/register.global.js"></script>
 
-<graph-3d-pie-chart>
-  <graph-pie-slice label="Blue" value="458" color="#3366cc"></graph-pie-slice>
-  <graph-pie-slice label="Red" value="83" color="#dc3912"></graph-pie-slice>
-</graph-3d-pie-chart>
+<kerka-3d-pie-chart>
+  <kerka-pie-slice label="Blue" value="458" color="#3366cc"></kerka-pie-slice>
+  <kerka-pie-slice label="Red" value="83" color="#dc3912"></kerka-pie-slice>
+</kerka-3d-pie-chart>
 ```
 
 `register.global.js` intentionally excludes Chart.js. It uses the global
@@ -98,7 +98,7 @@ CDN hosting is optional. Self-hosted files work the same way:
 ```
 
 The second script automatically registers the Chart.js components and defines
-`<graph-3d-pie-chart>` and `<graph-pie-slice>`. No inline JavaScript is needed.
+`<kerka-3d-pie-chart>` and `<kerka-pie-slice>`. No inline JavaScript is needed.
 
 ### Web Component
 
@@ -109,7 +109,7 @@ defineThreeDPieChart();
 ```
 
 ```html
-<graph-3d-pie-chart
+<kerka-3d-pie-chart
   aria-label="Distribution by category"
   depth="46"
   hover-offset="8"
@@ -121,14 +121,14 @@ defineThreeDPieChart();
   side-shade="0.28"
   vertical-scale="0.68"
 >
-  <graph-pie-slice label="Blue" value="458" color="#3366cc">
-  </graph-pie-slice>
-  <graph-pie-slice label="Red" value="83" color="#dc3912">
-  </graph-pie-slice>
-</graph-3d-pie-chart>
+  <kerka-pie-slice label="Blue" value="458" color="#3366cc">
+  </kerka-pie-slice>
+  <kerka-pie-slice label="Red" value="83" color="#dc3912">
+  </kerka-pie-slice>
+</kerka-3d-pie-chart>
 ```
 
-Adding, removing, or changing a direct `<graph-pie-slice>` child updates the
+Adding, removing, or changing a direct `<kerka-pie-slice>` child updates the
 existing chart instance. Each slice requires `label`, `value`, and `color`.
 
 The chart accepts these presentation attributes:
