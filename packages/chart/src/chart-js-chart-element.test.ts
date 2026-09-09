@@ -82,6 +82,14 @@ describe('ChartJsChartElement', () => {
       .toBe('A 50%; B 50%');
   });
 
+  it('allows the host to shrink as a flex item', () => {
+    const element = document.createElement('test-chart-js-element');
+    document.body.append(element);
+
+    expect(element.shadowRoot?.querySelector('style')?.textContent)
+      .toContain('min-inline-size: 0');
+  });
+
   it('destroys on disconnect and creates a fresh instance on reconnect', () => {
     const element = document.createElement('test-chart-js-element');
     document.body.append(element);

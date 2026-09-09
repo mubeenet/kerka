@@ -9,6 +9,7 @@ const styles = `
   :host {
     display: block;
     min-block-size: 12rem;
+    min-inline-size: 0;
     position: relative;
   }
 

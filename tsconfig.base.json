@@ -6,10 +6,13 @@
     "baseUrl": ".",
     "paths": {
       "@graph-web-component/chart": ["packages/chart/src/index.ts"],
-      "@graph-web-component/3d-pie-chart": ["packages/3d-pie-chart/src/index.ts"],
+      "@graph-web-component/3d-pie-chart": [
+        "packages/3d-pie-chart/src/index.ts"
+      ],
       "@graph-web-component/line-chart": ["packages/line-chart/src/index.ts"]
     },
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": [],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
