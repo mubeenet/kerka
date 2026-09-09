@@ -10,8 +10,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./register": "./dist/register.js",
-    "./register.global.js": "./dist/register.global.js"
+    "./register": "./dist/register.js"
   },
   "files": [
     "dist"

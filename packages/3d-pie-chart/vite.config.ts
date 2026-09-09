@@ -7,17 +7,18 @@ export default defineConfig({
     },
   },
   build: {
-    emptyOutDir: false,
-    outDir: new URL('./dist', import.meta.url).pathname,
+    emptyOutDir: true,
+    minify: 'oxc',
+    outDir: new URL('../../dist', import.meta.url).pathname,
     lib: {
       entry: new URL('./src/register.ts', import.meta.url).pathname,
-      formats: ['iife'],
-      name: 'GraphThreeDPieChart',
+      fileName: (format) => (format === 'umd' ? 'kerka.umd.min.js' : 'kerka.min.js'),
+      formats: ['es', 'umd'],
+      name: 'Kerka',
     },
     rollupOptions: {
       external: ['chart.js'],
       output: {
-        entryFileNames: 'register.global.js',
         globals: {
           'chart.js': 'Chart',
         },

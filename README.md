@@ -71,13 +71,13 @@ former custom Canvas renderer and scales package were removed during migration.
 No JavaScript import is required. Prerequisite: Chart.js `^4.5.1`, using its
 UMD build so it creates the global `Chart` object.
 
-Load Chart.js first, then `register.global.js`. Both scripts may use `defer`:
+Load Chart.js first, then `kerka.umd.min.js`. Both scripts may use `defer`:
 deferred classic scripts still execute in document order, after HTML parsing.
 Do not use `async`, because it does not preserve execution order.
 
 ```html
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/@graph-web-component/3d-pie-chart@0.1.0/dist/register.global.js"></script>
+<script defer src="/dist/kerka.umd.min.js"></script>
 
 <kerka-3d-pie-chart>
   <kerka-pie-slice label="Blue" value="458" color="#3366cc"></kerka-pie-slice>
@@ -85,20 +85,25 @@ Do not use `async`, because it does not preserve execution order.
 </kerka-3d-pie-chart>
 ```
 
-`register.global.js` intentionally excludes Chart.js. It uses the global
+`kerka.umd.min.js` intentionally excludes Chart.js. It uses the global
 `Chart` supplied by `chart.umd.min.js`, so other charts on the page share the
-same Chart.js runtime and registry. Loading `register.global.js` before Chart.js
+same Chart.js runtime and registry. Loading `kerka.umd.min.js` before Chart.js
 fails because the required global does not exist.
 
 CDN hosting is optional. Self-hosted files work the same way:
 
 ```html
 <script defer src="/assets/js/chart.umd.min.js"></script>
-<script defer src="/assets/js/register.global.js"></script>
+<script defer src="/assets/js/kerka.umd.min.js"></script>
 ```
 
 The second script automatically registers the Chart.js components and defines
 `<kerka-3d-pie-chart>` and `<kerka-pie-slice>`. No inline JavaScript is needed.
+
+The build writes both browser bundles to the repository-level `dist/` directory:
+
+- `kerka.umd.min.js` is the classic UMD build and expects the global `Chart`.
+- `kerka.min.js` is the ES module build and imports the `chart.js` peer dependency.
 
 ### Web Component
 

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  publicDir: '../../packages/3d-pie-chart/dist',
+  publicDir: '../../dist',
   resolve: {
     alias: {
       '@graph-web-component/chart': new URL(
