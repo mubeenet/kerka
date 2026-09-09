@@ -17,22 +17,81 @@
         inline-size: 7rem;
         min-block-size: 0;
       }
+
+      .area {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card {
+        flex: 1 1 auto;
+        width: 30rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card__left {
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card__right {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
     </style>
   </head>
   <body>
-    <kerka-3d-pie-chart
-      aria-label="Distribution by category"
-      depth="10"
-      hover-offset="18"
-      offset="18"
-      rotation="60"
-      side-shade="0.28"
-      vertical-scale="0.68"
-      reversed
-    >
-      <kerka-pie-slice label="Blue" value="458" color="#3366cc"></kerka-pie-slice>
-      <kerka-pie-slice label="Red" value="83" color="#dc3912"></kerka-pie-slice>
-    </kerka-3d-pie-chart>
+    <div class="area">
+      <section class="card">
+        <div class="card__left">
+          <span>
+            This is a small tiny explanation for the pie chart displayed in the right.
+          </span>
+        </div>
+        <div class="card__right">
+          <kerka-3d-pie-chart
+            aria-label="Distribution by category"
+            depth="10"
+            hover-offset="18"
+            offset="18"
+            rotation="60"
+            side-shade="0.28"
+            vertical-scale="0.68"
+            reversed
+          >
+            <kerka-pie-slice label="Blue" value="458" color="#3366cc"></kerka-pie-slice>
+          </kerka-3d-pie-chart>
+        </div>
+      </section>
+      <section class="card">
+        <div class="card__left">
+          <span>
+            This is a small tiny explanation for the pie chart displayed in the right.
+          </span>
+        </div>
+        <div class="card__right">
+          <kerka-3d-pie-chart
+            aria-label="Distribution by category"
+            depth="10"
+            hover-offset="18"
+            offset="18"
+            rotation="60"
+            side-shade="0.28"
+            vertical-scale="0.68"
+            reversed
+          >
+            <kerka-pie-slice label="Blue" value="458" color="#cc6633"></kerka-pie-slice>
+          </kerka-3d-pie-chart>
+        </div>
+      </section>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
     <script src="/kerka.umd.min.js"></script>
   </body>

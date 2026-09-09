@@ -35,8 +35,8 @@ export abstract class ChartJsChartElement<
 > extends HTMLElement {
   readonly #canvas: HTMLCanvasElement;
   readonly #description: HTMLSpanElement;
-  readonly #resizeObserver: ResizeObserver;
   #chart: Chart<TType> | undefined;
+  #creationFrame: number | undefined;
   #updateQueued = false;
   #updateMode: UpdateMode = 'default';
 
@@ -53,21 +53,24 @@ export abstract class ChartJsChartElement<
     this.#description = document.createElement('span');
     this.#description.className = 'accessible-description';
 
-    this.#resizeObserver = new ResizeObserver(() => {
-      this.#chart?.resize();
-    });
-
     root.append(style, this.#canvas, this.#description);
   }
 
   connectedCallback(): void {
     if (!this.hasAttribute('role')) this.setAttribute('role', 'img');
-    this.#createChart();
-    this.#resizeObserver.observe(this);
+    if (this.#chart || this.#creationFrame !== undefined) return;
+
+    this.#creationFrame = requestAnimationFrame(() => {
+      this.#creationFrame = undefined;
+      if (this.isConnected) this.#createChart();
+    });
   }
 
   disconnectedCallback(): void {
-    this.#resizeObserver.disconnect();
+    if (this.#creationFrame !== undefined) {
+      cancelAnimationFrame(this.#creationFrame);
+      this.#creationFrame = undefined;
+    }
     this.#chart?.destroy();
     this.#chart = undefined;
     this.#updateQueued = false;

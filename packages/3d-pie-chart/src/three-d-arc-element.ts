@@ -181,12 +181,35 @@ export class ThreeDArcElement extends ArcElement {
     ctx.translate(this.x, this.y);
     ctx.scale(1, this.verticalScale);
     ctx.translate(-this.x, -this.y);
-    super.draw(ctx);
-    ctx.restore();
+    try {
+      if (isFullCircle(this.circumference) && this.innerRadius === 0) {
+        this.#drawFullCircleTop(ctx);
+      } else {
+        super.draw(ctx);
+      }
+    } finally {
+      ctx.restore();
+    }
   }
 
   override draw(ctx: CanvasRenderingContext2D): void {
     this.drawTop(ctx);
+  }
+
+  #drawFullCircleTop(ctx: CanvasRenderingContext2D): void {
+    const offset = (this.options.offset || 0) / 4;
+    const angle = (this.startAngle + this.endAngle) / 2;
+    ctx.beginPath();
+    ctx.arc(
+      this.x + Math.cos(angle) * offset,
+      this.y + Math.sin(angle) * offset,
+      Math.max(this.outerRadius + offset - this.pixelMargin, 0),
+      0,
+      Math.PI * 2,
+    );
+    ctx.closePath();
+    ctx.fillStyle = this.options.backgroundColor;
+    ctx.fill();
   }
 
   #drawOuterWall(

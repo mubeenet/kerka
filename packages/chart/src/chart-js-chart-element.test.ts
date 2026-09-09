@@ -3,18 +3,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const chartInstances: MockChart[] = [];
-const resizeObserverInstances: MockResizeObserver[] = [];
-
-class MockResizeObserver {
-  readonly disconnect = vi.fn();
-  readonly observe = vi.fn();
-
-  constructor(readonly callback: ResizeObserverCallback) {
-    resizeObserverInstances.push(this);
-  }
+function waitForAnimationFrame(): Promise<void> {
+  return new Promise((resolve) => requestAnimationFrame(() => resolve()));
 }
-
-vi.stubGlobal('ResizeObserver', MockResizeObserver);
 
 class MockChart {
   readonly config: unknown;
@@ -63,12 +54,14 @@ describe('ChartJsChartElement', () => {
   beforeEach(() => {
     document.body.replaceChildren();
     chartInstances.length = 0;
-    resizeObserverInstances.length = 0;
   });
 
-  it('creates one Chart.js instance when connected', () => {
+  it('creates one Chart.js instance after the first layout frame', async () => {
     const element = document.createElement('test-chart-js-element');
     document.body.append(element);
+
+    expect(chartInstances).toHaveLength(0);
+    await waitForAnimationFrame();
 
     expect(chartInstances).toHaveLength(1);
     expect(chartInstances[0]?.config).toMatchObject({ type: 'line' });
@@ -79,6 +72,7 @@ describe('ChartJsChartElement', () => {
   it('batches synchronous update requests and preserves the latest mode', async () => {
     const element = document.createElement('test-chart-js-element') as TestChartElement;
     document.body.append(element);
+    await waitForAnimationFrame();
 
     element.update();
     element.update('none');
@@ -104,29 +98,27 @@ describe('ChartJsChartElement', () => {
       .toContain('min-inline-size: 0');
   });
 
-  it('resizes the chart when the host layout changes', () => {
+  it('destroys on disconnect and creates a fresh instance on reconnect', async () => {
     const element = document.createElement('test-chart-js-element');
     document.body.append(element);
-
-    const observer = resizeObserverInstances[0];
-    expect(observer?.observe).toHaveBeenCalledWith(element);
-
-    observer?.callback([], observer as unknown as ResizeObserver);
-
-    expect(chartInstances[0]?.resize).toHaveBeenCalledOnce();
-  });
-
-  it('destroys on disconnect and creates a fresh instance on reconnect', () => {
-    const element = document.createElement('test-chart-js-element');
-    document.body.append(element);
+    await waitForAnimationFrame();
     const first = chartInstances[0];
 
     element.remove();
-    expect(resizeObserverInstances[0]?.disconnect).toHaveBeenCalledOnce();
     expect(first?.destroy).toHaveBeenCalledOnce();
 
     document.body.append(element);
+    await waitForAnimationFrame();
     expect(chartInstances).toHaveLength(2);
-    expect(resizeObserverInstances[0]?.observe).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not create a chart when disconnected before its animation frame', async () => {
+    const element = document.createElement('test-chart-js-element');
+    document.body.append(element);
+
+    element.remove();
+    await waitForAnimationFrame();
+
+    expect(chartInstances).toHaveLength(0);
   });
 });

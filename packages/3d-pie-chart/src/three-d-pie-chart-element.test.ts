@@ -4,6 +4,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const instances: MockChart[] = [];
 
+function waitForAnimationFrame(): Promise<void> {
+  return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+}
+
 class MockChart {
   static register = vi.fn();
   readonly configuration: Record<string, any>;
@@ -48,7 +52,7 @@ describe('GraphThreeDPieChartElement', () => {
     instances.length = 0;
   });
 
-  it('maps component data and options into a Chart.js configuration', () => {
+  it('maps component data and options into a Chart.js configuration', async () => {
     const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
     element.innerHTML = `
       <kerka-pie-slice label="Blue" value="2" color="#3366cc"></kerka-pie-slice>
@@ -59,6 +63,7 @@ describe('GraphThreeDPieChartElement', () => {
     element.setAttribute('reversed', '');
     element.setAttribute('vertical-scale', '0.6');
     document.body.append(element);
+    await waitForAnimationFrame();
 
     expect(instances[0]?.data).toMatchObject({
       labels: ['Blue', 'Red'],
@@ -85,6 +90,7 @@ describe('GraphThreeDPieChartElement', () => {
   it('updates the existing chart and supports numeric attributes', async () => {
     const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
     document.body.append(element);
+    await waitForAnimationFrame();
     element.insertAdjacentHTML(
       'beforeend',
       '<kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>',
@@ -98,13 +104,14 @@ describe('GraphThreeDPieChartElement', () => {
     expect(instances[0]?.update).toHaveBeenCalledOnce();
   });
 
-  it('emits typed slice details for hover and click callbacks', () => {
+  it('emits typed slice details for hover and click callbacks', async () => {
     const element = document.createElement('test-3d-pie-chart') as GraphThreeDPieChartElement;
     element.innerHTML = `
       <kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>
       <kerka-pie-slice label="B" value="3" color="#ffffff"></kerka-pie-slice>
     `;
     document.body.append(element);
+    await waitForAnimationFrame();
     const clicked = vi.fn();
     const hovered = vi.fn();
     element.addEventListener('three-d-pie-click', clicked);
@@ -136,6 +143,7 @@ describe('GraphThreeDPieChartElement', () => {
     element.innerHTML =
       '<kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>';
     document.body.append(element);
+    await waitForAnimationFrame();
     element.querySelector('kerka-pie-slice')?.setAttribute('value', '4');
     await Promise.resolve();
     await Promise.resolve();
@@ -150,6 +158,7 @@ describe('GraphThreeDPieChartElement', () => {
     element.innerHTML =
       '<kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>';
     document.body.append(element);
+    await waitForAnimationFrame();
 
     expect(instances[0]?.options.plugins.threeDPieLabels).toEqual({
       color: '#ffffff',
@@ -169,6 +178,7 @@ describe('GraphThreeDPieChartElement', () => {
     element.innerHTML =
       '<kerka-pie-slice label="A" value="1" color="#000000"></kerka-pie-slice>';
     document.body.append(element);
+    await waitForAnimationFrame();
 
     expect(instances[0]?.options.plugins.tooltip.enabled).toBe(true);
 

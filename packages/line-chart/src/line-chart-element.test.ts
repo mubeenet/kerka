@@ -5,6 +5,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const instances: MockChart[] = [];
 const register = vi.fn();
 
+function waitForAnimationFrame(): Promise<void> {
+  return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+}
+
 class MockChart {
   readonly configuration: Record<string, any>;
   readonly destroy = vi.fn();
@@ -47,11 +51,12 @@ describe('GraphLineChartElement on Chart.js', () => {
     register.mockClear();
   });
 
-  it('registers Chart.js parts and creates a line configuration', () => {
+  it('registers Chart.js parts and creates a line configuration', async () => {
     registerLineChartComponents();
     const element = document.createElement('test-chart-js-line') as GraphLineChartElement;
     element.data = [{ x: 1, y: 2 }];
     document.body.append(element);
+    await waitForAnimationFrame();
 
     expect(register).toHaveBeenCalledOnce();
     expect(instances[0]?.data.datasets[0]).toMatchObject({
@@ -68,6 +73,7 @@ describe('GraphLineChartElement on Chart.js', () => {
   it('updates data and presentation without recreating the chart', async () => {
     const element = document.createElement('test-chart-js-line') as GraphLineChartElement;
     document.body.append(element);
+    await waitForAnimationFrame();
 
     element.data = [{ x: 3, y: 7 }];
     element.setAttribute('line-color', '#ff0000');

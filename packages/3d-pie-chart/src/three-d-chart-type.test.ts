@@ -117,6 +117,27 @@ describe('ThreeDArcElement', () => {
     expect(context.fill).not.toHaveBeenCalled();
   });
 
+  it('draws a full-circle top without spacing', () => {
+    const arc = createArc();
+    arc.endAngle = Math.PI * 2;
+    arc.circumference = Math.PI * 2;
+    arc.options.spacing = 8;
+    const context = createContext();
+
+    arc.drawTop(context);
+
+    expect(arc.options.spacing).toBe(8);
+    expect(context.arc).toHaveBeenCalledOnce();
+    expect(context.arc).toHaveBeenCalledWith(
+      arc.x,
+      arc.y,
+      arc.outerRadius,
+      0,
+      Math.PI * 2,
+    );
+    expect(context.lineTo).not.toHaveBeenCalled();
+  });
+
   it('calculates depth independently for each radial boundary', () => {
     const arc = createArc();
     arc.startAngle = -Math.PI / 2;
